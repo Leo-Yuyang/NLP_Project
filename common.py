@@ -1,8 +1,12 @@
+from __future__ import annotations
+
 import json
 import math
 import re
 from collections import Counter
 from pathlib import Path
+
+import numpy as np
 
 
 def normalize_answer(value: str) -> str:
@@ -49,3 +53,50 @@ def save_result(path: str, payload: dict) -> None:
     target = Path(path)
     target.parent.mkdir(parents=True, exist_ok=True)
     target.write_text(json.dumps(payload, indent=2, sort_keys=True, allow_nan=False) + "\n", encoding="utf-8")
+
+
+def binary_auc(labels: list[int], scores: list[float]) -> float:
+    positives = sum(labels)
+    negatives = len(labels) - positives
+    if positives == 0 or negatives == 0:
+        return 0.5
+    order = sorted(range(len(scores)), key=lambda index: scores[index])
+    ranks = [0.0] * len(scores)
+    start = 0
+    while start < len(order):
+        end = start + 1
+        while end < len(order) and scores[order[end]] == scores[order[start]]:
+            end += 1
+        rank = (start + 1 + end) / 2.0
+        for position in range(start, end):
+            ranks[order[position]] = rank
+        start = end
+    rank_sum = sum(rank for rank, label in zip(ranks, labels) if label == 1)
+    return (rank_sum - positives * (positives + 1) / 2.0) / (positives * negatives)
+
+
+def aurc(labels: list[int], scores: list[float]) -> float:
+    order = sorted(range(len(scores)), key=lambda index: (scores[index], index))
+    errors = 0
+    risks = []
+    for count, index in enumerate(order, start=1):
+        errors += labels[index]
+        risks.append(errors / count)
+    return float(np.mean(risks))
+
+
+def selective_accuracy(labels: list[int], scores: list[float], coverage: float) -> float:
+    count = max(1, min(len(labels), round(len(labels) * coverage)))
+    selected = sorted(range(len(scores)), key=lambda index: (scores[index], index))[:count]
+    return 1.0 - sum(labels[index] for index in selected) / count
+
+
+def metric_record(rows: list[dict], scores: list[float]) -> dict[str, float | int]:
+    labels = [1 - int(row["correct"]) for row in rows]
+    return {
+        "samples": len(rows),
+        "error_rate": float(np.mean(labels)),
+        "aurc": aurc(labels, scores),
+        "error_auroc": binary_auc(labels, scores),
+        "accuracy_at_80_percent_coverage": selective_accuracy(labels, scores, 0.8),
+    }
