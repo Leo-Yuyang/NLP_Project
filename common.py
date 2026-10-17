@@ -3,7 +3,7 @@ from __future__ import annotations
 import json
 import math
 import re
-from collections import Counter
+from collections import Counter, defaultdict
 from pathlib import Path
 
 import numpy as np
@@ -152,3 +152,10 @@ def risk_scores(rows: list[dict], method: str, peer_limit: int | None = None) ->
 
 def evaluate(rows: list[dict], methods) -> dict[str, dict]:
     return {method: metric_record(rows, risk_scores(rows, method)) for method in methods}
+
+
+def grouped(rows: list[dict], field: str) -> dict[str, list[dict]]:
+    groups: dict[str, list[dict]] = defaultdict(list)
+    for row in rows:
+        groups[str(row[field])].append(row)
+    return dict(sorted(groups.items()))

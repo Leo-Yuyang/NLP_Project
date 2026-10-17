@@ -1,6 +1,6 @@
 import argparse
 
-from common import evaluate, load_rows, save_result
+from common import evaluate, grouped, load_rows, save_result
 
 
 METHODS = [
@@ -22,6 +22,7 @@ def main() -> None:
     result = {
         "demo": False,
         "overall": evaluate(rows, METHODS),
+        "by_dataset": {name: evaluate(group, METHODS) for name, group in grouped(rows, "dataset").items()},
     }
     save_result(args.output, result)
     print(args.output)
