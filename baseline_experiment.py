@@ -1,0 +1,30 @@
+import argparse
+
+from common import evaluate, load_rows, save_result
+
+
+METHODS = [
+    "absolute",
+    "variation_ratio",
+    "semantic_entropy",
+    "peer_disagreement",
+]
+
+
+def main() -> None:
+    parser = argparse.ArgumentParser()
+    parser.add_argument("--input", required=True)
+    parser.add_argument("--output", default="outputs/baselines.json")
+    args = parser.parse_args()
+    rows = load_rows(args.input)
+    result = {
+        "demo": False,
+        "overall": evaluate(rows, METHODS),
+    }
+    save_result(args.output, result)
+    print(args.output)
+
+
+if __name__ == "__main__":
+    main()
+

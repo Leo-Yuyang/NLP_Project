@@ -100,3 +100,38 @@ def metric_record(rows: list[dict], scores: list[float]) -> dict[str, float | in
         "error_auroc": binary_auc(labels, scores),
         "accuracy_at_80_percent_coverage": selective_accuracy(labels, scores, 0.8),
     }
+
+
+def normalized_entropy(answers: list[str]) -> float:
+    """Entropy of normalized text counts, without semantic clustering."""
+    if len(answers) < 2:
+        return 0.0
+    counts = Counter(normalize_answer(answer) for answer in answers)
+    probabilities = [count / len(answers) for count in counts.values()]
+    entropy = -sum(value * math.log(value) for value in probabilities)
+    return entropy / math.log(len(answers))
+
+
+def features(row: dict, peer_limit: int | None = None) -> dict[str, float]:
+    answer = str(row["answer"])
+    peers = [str(value) for value in row.get("peer_answers", [])]
+    if peer_limit is not None:
+        peers = peers[:peer_limit]
+    similarities = [token_f1(answer, peer) for peer in peers]
+    answers = [answer, *peers]
+    majority = max(Counter(normalize_answer(value) for value in answers).values())
+    confidence = min(1.0, max(0.0, float(row["confidence"])))
+    return {
+        "absolute": 1.0 - confidence,
+        "peer_disagreement": 1.0 - float(np.mean(similarities)) if similarities else 0.0,
+        "semantic_entropy": normalized_entropy(answers),
+        "variation_ratio": 1.0 - majority / len(answers),
+    }
+
+
+def risk_scores(rows: list[dict], method: str, peer_limit: int | None = None) -> list[float]:
+    return [features(row, peer_limit)[method] for row in rows]
+
+
+def evaluate(rows: list[dict], methods) -> dict[str, dict]:
+    return {method: metric_record(rows, risk_scores(rows, method)) for method in methods}
