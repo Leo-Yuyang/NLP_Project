@@ -8,6 +8,8 @@ METHODS = [
     "variation_ratio",
     "semantic_entropy",
     "peer_disagreement",
+    "weighted_disagreement",
+    "spar",
 ]
 
 

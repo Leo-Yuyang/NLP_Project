@@ -115,17 +115,34 @@ def normalized_entropy(answers: list[str]) -> float:
 def features(row: dict, peer_limit: int | None = None) -> dict[str, float]:
     answer = str(row["answer"])
     peers = [str(value) for value in row.get("peer_answers", [])]
+    peer_confidences = [float(value) for value in row.get("peer_confidences", [])]
     if peer_limit is not None:
         peers = peers[:peer_limit]
-    similarities = [token_f1(answer, peer) for peer in peers]
-    answers = [answer, *peers]
-    majority = max(Counter(normalize_answer(value) for value in answers).values())
+        peer_confidences = peer_confidences[:peer_limit]
     confidence = min(1.0, max(0.0, float(row["confidence"])))
+    similarities = [token_f1(answer, peer) for peer in peers]
+    disagreement = 1.0 - float(np.mean(similarities)) if similarities else 0.0
+    if similarities and len(peer_confidences) == len(similarities):
+        weights = np.asarray(peer_confidences, dtype=float)
+        weights = np.maximum(weights, 1e-6)
+        weighted = float(np.average(1.0 - np.asarray(similarities), weights=weights))
+    else:
+        weighted = disagreement
+    ambiguity = normalized_entropy(peers)
+    all_answers = [answer, *peers]
+    majority = max(Counter(normalize_answer(value) for value in all_answers).values())
+    variation = 1.0 - majority / len(all_answers)
+    absolute = 1.0 - confidence
+    # Fixed weights from the trained risk scorer.
+    spar = 0.40 * absolute + 0.35 * weighted + 0.25 * ambiguity
     return {
-        "absolute": 1.0 - confidence,
-        "peer_disagreement": 1.0 - float(np.mean(similarities)) if similarities else 0.0,
-        "semantic_entropy": normalized_entropy(answers),
-        "variation_ratio": 1.0 - majority / len(answers),
+        "absolute": absolute,
+        "peer_disagreement": disagreement,
+        "weighted_disagreement": weighted,
+        "semantic_entropy": normalized_entropy(all_answers),
+        "variation_ratio": variation,
+        "ambiguity": ambiguity,
+        "spar": spar,
     }
 
 
