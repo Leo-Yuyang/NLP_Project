@@ -9,7 +9,7 @@ METHODS = ["absolute", "peer_disagreement", "semantic_entropy", "spar"]
 
 def main() -> None:
     parser = argparse.ArgumentParser(description="Measure risk scoring time on saved answers, excluding VLM inference.")
-    parser.add_argument("--input", required=True)
+    parser.add_argument("--input", help="Saved answers in JSONL format; omit to use synthetic demo data")
     parser.add_argument("--repeats", type=int, default=100)
     parser.add_argument("--output", default="outputs/efficiency.json")
     args = parser.parse_args()
@@ -27,7 +27,7 @@ def main() -> None:
             "seconds": elapsed,
             "rows_per_second": len(rows) * args.repeats / elapsed,
         }
-    save_result(args.output, {"demo": False, "scope": "scoring_only", "rows": len(rows), "repeats": args.repeats, "timings": timings})
+    save_result(args.output, {"demo": args.input is None, "scope": "scoring_only", "rows": len(rows), "repeats": args.repeats, "timings": timings})
     print(args.output)
 
 

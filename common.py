@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import json
 import math
+import random
 import re
 from collections import Counter, defaultdict
 from pathlib import Path
@@ -24,7 +25,9 @@ def token_f1(left: str, right: str) -> float:
     return 2.0 * precision * recall / (precision + recall)
 
 
-def load_rows(path: str) -> list[dict]:
+def load_rows(path: str | None) -> list[dict]:
+    if path is None:
+        return demo_rows()
     rows = [json.loads(line) for line in Path(path).read_text(encoding="utf-8").splitlines() if line.strip()]
     required = {"sample_id", "dataset", "model", "answer", "confidence", "correct"}
     for index, row in enumerate(rows):
@@ -173,3 +176,41 @@ def grouped(rows: list[dict], field: str) -> dict[str, list[dict]]:
     for row in rows:
         groups[str(row[field])].append(row)
     return dict(sorted(groups.items()))
+
+
+def demo_rows(seed: int = 42, samples_per_cell: int = 40) -> list[dict]:
+    rng = random.Random(seed)
+    datasets = ["vqav2", "aokvqa", "textvqa", "vizwiz"]
+    models = [("vlm-4b", 4.0), ("vlm-8b", 8.0), ("vlm-27b", 27.0)]
+    vocabulary = ["cat", "dog", "red car", "two people", "yes", "no"]
+    rows = []
+    for dataset_index, dataset in enumerate(datasets):
+        for model, size in models:
+            ability = 0.54 + 0.10 * math.log10(size) - 0.025 * dataset_index
+            for index in range(samples_per_cell):
+                truth = rng.choice(vocabulary)
+                difficulty = rng.random()
+                probability = min(0.94, max(0.12, ability + 0.28 * (0.5 - difficulty)))
+                correct = rng.random() < probability
+                answer = truth if correct else rng.choice([value for value in vocabulary if value != truth])
+                confidence = min(0.99, max(0.01, probability + rng.uniform(-0.18, 0.18)))
+                peer_answers = []
+                peer_confidences = []
+                for _ in range(3):
+                    peer_correct = rng.random() < min(0.95, max(0.10, probability + rng.uniform(-0.12, 0.12)))
+                    peer_answers.append(truth if peer_correct else rng.choice([value for value in vocabulary if value != truth]))
+                    peer_confidences.append(min(0.99, max(0.01, probability + rng.uniform(-0.20, 0.20))))
+                rows.append(
+                    {
+                        "sample_id": f"{dataset}-{model}-{index:04d}",
+                        "dataset": dataset,
+                        "model": model,
+                        "model_size_b": size,
+                        "answer": answer,
+                        "confidence": confidence,
+                        "correct": int(correct),
+                        "peer_answers": peer_answers,
+                        "peer_confidences": peer_confidences,
+                    }
+                )
+    return rows

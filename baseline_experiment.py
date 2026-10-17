@@ -15,12 +15,12 @@ METHODS = [
 
 def main() -> None:
     parser = argparse.ArgumentParser()
-    parser.add_argument("--input", required=True)
+    parser.add_argument("--input", help="Saved answers in JSONL format; omit to use synthetic demo data")
     parser.add_argument("--output", default="outputs/baselines.json")
     args = parser.parse_args()
     rows = load_rows(args.input)
     result = {
-        "demo": False,
+        "demo": args.input is None,
         "overall": evaluate(rows, METHODS),
         "by_dataset": {name: evaluate(group, METHODS) for name, group in grouped(rows, "dataset").items()},
     }

@@ -15,7 +15,7 @@ def matrix(rows: list[dict]) -> np.ndarray:
 
 def main() -> None:
     parser = argparse.ArgumentParser()
-    parser.add_argument("--input", required=True)
+    parser.add_argument("--input", help="Saved answers in JSONL format; omit to use synthetic demo data")
     parser.add_argument("--source", default="vqav2,aokvqa")
     parser.add_argument("--target", default="textvqa,vizwiz")
     parser.add_argument("--output", default="outputs/transfer.json")
@@ -35,7 +35,7 @@ def main() -> None:
     model = LogisticRegression(penalty="l2", random_state=42, max_iter=500).fit(matrix(source), labels)
     learned = model.predict_proba(matrix(target))[:, 1].tolist()
     result = {
-        "demo": False,
+        "demo": args.input is None,
         "source_datasets": sorted(source_names),
         "target_datasets": sorted(target_names),
         "features": FEATURE_NAMES,

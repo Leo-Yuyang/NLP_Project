@@ -1,0 +1,247 @@
+{
+  "by_dataset": {
+    "aokvqa": {
+      "absolute": {
+        "accuracy_at_80_percent_coverage": 0.6,
+        "aurc": 0.1638888888888889,
+        "error_auroc": 0.75,
+        "error_rate": 0.3333333333333333,
+        "samples": 6
+      },
+      "peer_disagreement": {
+        "accuracy_at_80_percent_coverage": 0.8,
+        "aurc": 0.08888888888888889,
+        "error_auroc": 1.0,
+        "error_rate": 0.3333333333333333,
+        "samples": 6
+      },
+      "semantic_entropy": {
+        "accuracy_at_80_percent_coverage": 0.8,
+        "aurc": 0.1861111111111111,
+        "error_auroc": 0.6875,
+        "error_rate": 0.3333333333333333,
+        "samples": 6
+      },
+      "spar": {
+        "accuracy_at_80_percent_coverage": 0.8,
+        "aurc": 0.1861111111111111,
+        "error_auroc": 0.75,
+        "error_rate": 0.3333333333333333,
+        "samples": 6
+      }
+    },
+    "textvqa": {
+      "absolute": {
+        "accuracy_at_80_percent_coverage": 0.4,
+        "aurc": 0.4611111111111111,
+        "error_auroc": 0.4444444444444444,
+        "error_rate": 0.5,
+        "samples": 6
+      },
+      "peer_disagreement": {
+        "accuracy_at_80_percent_coverage": 0.6,
+        "aurc": 0.33055555555555555,
+        "error_auroc": 0.8333333333333334,
+        "error_rate": 0.5,
+        "samples": 6
+      },
+      "semantic_entropy": {
+        "accuracy_at_80_percent_coverage": 0.6,
+        "aurc": 0.33055555555555555,
+        "error_auroc": 0.8333333333333334,
+        "error_rate": 0.5,
+        "samples": 6
+      },
+      "spar": {
+        "accuracy_at_80_percent_coverage": 0.6,
+        "aurc": 0.33055555555555555,
+        "error_auroc": 0.7777777777777778,
+        "error_rate": 0.5,
+        "samples": 6
+      }
+    },
+    "vizwiz": {
+      "absolute": {
+        "accuracy_at_80_percent_coverage": 0.6,
+        "aurc": 0.37222222222222223,
+        "error_auroc": 0.6666666666666666,
+        "error_rate": 0.5,
+        "samples": 6
+      },
+      "peer_disagreement": {
+        "accuracy_at_80_percent_coverage": 0.6,
+        "aurc": 0.19166666666666665,
+        "error_auroc": 1.0,
+        "error_rate": 0.5,
+        "samples": 6
+      },
+      "semantic_entropy": {
+        "accuracy_at_80_percent_coverage": 0.6,
+        "aurc": 0.33055555555555555,
+        "error_auroc": 0.7777777777777778,
+        "error_rate": 0.5,
+        "samples": 6
+      },
+      "spar": {
+        "accuracy_at_80_percent_coverage": 0.6,
+        "aurc": 0.19166666666666665,
+        "error_auroc": 1.0,
+        "error_rate": 0.5,
+        "samples": 6
+      }
+    },
+    "vqav2": {
+      "absolute": {
+        "accuracy_at_80_percent_coverage": 0.6,
+        "aurc": 0.2888888888888889,
+        "error_auroc": 0.7777777777777778,
+        "error_rate": 0.5,
+        "samples": 6
+      },
+      "peer_disagreement": {
+        "accuracy_at_80_percent_coverage": 0.4,
+        "aurc": 0.3222222222222222,
+        "error_auroc": 0.8333333333333334,
+        "error_rate": 0.5,
+        "samples": 6
+      },
+      "semantic_entropy": {
+        "accuracy_at_80_percent_coverage": 0.4,
+        "aurc": 0.4055555555555555,
+        "error_auroc": 0.7222222222222222,
+        "error_rate": 0.5,
+        "samples": 6
+      },
+      "spar": {
+        "accuracy_at_80_percent_coverage": 0.6,
+        "aurc": 0.2888888888888889,
+        "error_auroc": 0.7777777777777778,
+        "error_rate": 0.5,
+        "samples": 6
+      }
+    }
+  },
+  "by_model": {
+    "vlm-27b": {
+      "absolute": {
+        "accuracy_at_80_percent_coverage": 0.5,
+        "aurc": 0.2441964285714286,
+        "error_auroc": 0.6,
+        "error_rate": 0.375,
+        "samples": 8
+      },
+      "peer_disagreement": {
+        "accuracy_at_80_percent_coverage": 0.8333333333333334,
+        "aurc": 0.10342261904761904,
+        "error_auroc": 0.9,
+        "error_rate": 0.375,
+        "samples": 8
+      },
+      "semantic_entropy": {
+        "accuracy_at_80_percent_coverage": 0.8333333333333334,
+        "aurc": 0.2013392857142857,
+        "error_auroc": 0.6666666666666666,
+        "error_rate": 0.375,
+        "samples": 8
+      },
+      "spar": {
+        "accuracy_at_80_percent_coverage": 0.6666666666666667,
+        "aurc": 0.2400297619047619,
+        "error_auroc": 0.6666666666666666,
+        "error_rate": 0.375,
+        "samples": 8
+      }
+    },
+    "vlm-4b": {
+      "absolute": {
+        "accuracy_at_80_percent_coverage": 0.6666666666666667,
+        "aurc": 0.2556547619047619,
+        "error_auroc": 0.875,
+        "error_rate": 0.5,
+        "samples": 8
+      },
+      "peer_disagreement": {
+        "accuracy_at_80_percent_coverage": 0.6666666666666667,
+        "aurc": 0.18273809523809526,
+        "error_auroc": 1.0,
+        "error_rate": 0.5,
+        "samples": 8
+      },
+      "semantic_entropy": {
+        "accuracy_at_80_percent_coverage": 0.6666666666666667,
+        "aurc": 0.3431547619047619,
+        "error_auroc": 0.8125,
+        "error_rate": 0.5,
+        "samples": 8
+      },
+      "spar": {
+        "accuracy_at_80_percent_coverage": 0.6666666666666667,
+        "aurc": 0.2556547619047619,
+        "error_auroc": 0.875,
+        "error_rate": 0.5,
+        "samples": 8
+      }
+    },
+    "vlm-8b": {
+      "absolute": {
+        "accuracy_at_80_percent_coverage": 0.33333333333333337,
+        "aurc": 0.39642857142857135,
+        "error_auroc": 0.5,
+        "error_rate": 0.5,
+        "samples": 8
+      },
+      "peer_disagreement": {
+        "accuracy_at_80_percent_coverage": 0.6666666666666667,
+        "aurc": 0.2556547619047619,
+        "error_auroc": 0.875,
+        "error_rate": 0.5,
+        "samples": 8
+      },
+      "semantic_entropy": {
+        "accuracy_at_80_percent_coverage": 0.6666666666666667,
+        "aurc": 0.2806547619047619,
+        "error_auroc": 0.75,
+        "error_rate": 0.5,
+        "samples": 8
+      },
+      "spar": {
+        "accuracy_at_80_percent_coverage": 0.6666666666666667,
+        "aurc": 0.2556547619047619,
+        "error_auroc": 0.875,
+        "error_rate": 0.5,
+        "samples": 8
+      }
+    }
+  },
+  "demo": true,
+  "overall": {
+    "absolute": {
+      "accuracy_at_80_percent_coverage": 0.5789473684210527,
+      "aurc": 0.2896571764675227,
+      "error_auroc": 0.6573426573426573,
+      "error_rate": 0.4583333333333333,
+      "samples": 24
+    },
+    "peer_disagreement": {
+      "accuracy_at_80_percent_coverage": 0.6842105263157895,
+      "aurc": 0.1813199235766203,
+      "error_auroc": 0.9125874125874126,
+      "error_rate": 0.4583333333333333,
+      "samples": 24
+    },
+    "semantic_entropy": {
+      "accuracy_at_80_percent_coverage": 0.6842105263157895,
+      "aurc": 0.28936029687434656,
+      "error_auroc": 0.7482517482517482,
+      "error_rate": 0.4583333333333333,
+      "samples": 24
+    },
+    "spar": {
+      "accuracy_at_80_percent_coverage": 0.631578947368421,
+      "aurc": 0.2265620035855347,
+      "error_auroc": 0.8181818181818182,
+      "error_rate": 0.4583333333333333,
+      "samples": 24
+    }
+  }
+}
