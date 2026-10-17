@@ -147,6 +147,20 @@ def features(row: dict, peer_limit: int | None = None) -> dict[str, float]:
 
 
 def risk_scores(rows: list[dict], method: str, peer_limit: int | None = None) -> list[float]:
+    if method == "absolute":
+        return [1.0 - min(1.0, max(0.0, float(row["confidence"]))) for row in rows]
+    if method in {"peer_disagreement", "semantic_entropy"}:
+        scores = []
+        for row in rows:
+            answer = str(row["answer"])
+            peers = [str(value) for value in row.get("peer_answers", [])]
+            if peer_limit is not None:
+                peers = peers[:peer_limit]
+            if method == "semantic_entropy":
+                scores.append(normalized_entropy([answer, *peers]))
+            else:
+                scores.append(1.0 - sum(token_f1(answer, peer) for peer in peers) / len(peers) if peers else 0.0)
+        return scores
     return [features(row, peer_limit)[method] for row in rows]
 
 
