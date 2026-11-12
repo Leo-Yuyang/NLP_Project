@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-set -eu
+set -euo pipefail
 
 ROOT="$(cd "$(dirname "$0")" && pwd)"
 OUTPUT="${1:-$ROOT/outputs}"
@@ -11,6 +11,6 @@ else
 fi
 
 mkdir -p "$OUTPUT"
-for experiment in main baseline transfer efficiency; do
+for experiment in main baseline transfer efficiency scale control ablation robustness calibration significance subsample_stability; do
     "$PYTHON" "$ROOT/${experiment}_experiment.py" "$@" --output "$OUTPUT/$experiment.json"
 done
