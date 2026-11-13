@@ -12,13 +12,20 @@ This repository is a midterm submission assembled from the current release. It c
 | `baseline_experiment.py` | Confidence, disagreement, answer entropy, variation ratio, and SPAR comparisons |
 | `transfer_experiment.py` | Preliminary source-to-target feature transfer comparison |
 | `efficiency_experiment.py` | CPU scoring throughput on existing answers |
+| `scale_experiment.py` | Risk-ranking metrics grouped by model size |
+| `control_experiment.py` | Peer-count and coverage checks |
+| `ablation_experiment.py` | Fixed-score component comparisons |
+| `robustness_experiment.py` | Confidence and peer-answer perturbations |
+| `calibration_experiment.py` | Brier score and expected calibration error |
+| `significance_experiment.py` | Row-bootstrap AURC comparison with focal confidence |
+| `subsample_stability_experiment.py` | Variation across seeded synthetic runs or row subsamples |
 | `common.py` | JSONL loading, answer features, metrics, and synthetic data generation |
-| `run.sh` | Run the four experiment entry points |
+| `run.sh` | Run all eleven experiment entry points |
 | `requirements.txt` | Python dependencies: NumPy and scikit-learn |
 | `examples/` | Synthetic JSONL input, matching sample results, and data notes |
 | `UPSTREAM.md` | Retained upstream provenance information |
 
-Metrics include AURC (lower is better), error AUROC, and accuracy at 80% coverage. Scale studies, peer-capacity controls, deployment sweeps, and full ablations are outside this submission.
+Core ranking metrics include AURC (lower is better), error AUROC, and accuracy at 80% coverage. The added analyses are diagnostics on saved answers.
 
 ## Run
 
@@ -33,7 +40,7 @@ bash run.sh
 
 With no input, scripts generate deterministic synthetic examples and mark outputs with `demo: true`. These examples check the pipeline and are not VQAv2, A-OKVQA, TextVQA, or VizWiz evaluation results.
 
-Outputs are written to `outputs/main.json`, `outputs/baseline.json`, `outputs/transfer.json`, and `outputs/efficiency.json`. Override the interpreter with `PYTHON=/path/to/python bash run.sh`.
+The runner writes one JSON file per experiment to `outputs/`. Override the interpreter with `PYTHON=/path/to/python bash run.sh`.
 
 A small saved synthetic example is also included:
 
@@ -51,7 +58,7 @@ python3 main_experiment.py --input /path/to/answers.jsonl
 python3 transfer_experiment.py --input /path/to/answers.jsonl --source vqav2,aokvqa --target textvqa,vizwiz
 ```
 
-The combined runner expects data for both source and target datasets. For a VQAv2-only export, run the main and baseline scripts individually:
+The combined runner expects both source and target datasets and requires `model_size_b` in every row for the scale analysis. When an export lacks those fields, run the applicable scripts individually:
 
 ```bash
 python3 baseline_experiment.py --input /path/to/vqav2.jsonl
@@ -62,7 +69,7 @@ The transfer experiment requires disjoint source/target dataset names, nonempty 
 Each JSONL line is one focal answer with its peer answers:
 
 ```json
-{"sample_id":"example-1","dataset":"vqav2","model":"focal-vlm","answer":"two people","confidence":0.8,"correct":1,"peer_answers":["two people","2 people","three people"],"peer_confidences":[0.8,0.7,0.6]}
+{"sample_id":"example-1","dataset":"vqav2","model":"focal-vlm","model_size_b":4,"answer":"two people","confidence":0.8,"correct":1,"peer_answers":["two people","2 people","three people"],"peer_confidences":[0.8,0.7,0.6]}
 ```
 
 `correct` is a binary evaluation label, not an input to the fixed risk scorer. Confidence values must lie in [0, 1]. Peer confidences are optional; when provided, their count must match the peer answers. The scripts consume saved answers and do not query VLMs.
